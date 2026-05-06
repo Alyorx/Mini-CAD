@@ -1,0 +1,854 @@
+/* ================================================================
+    SimplCAD — Design System & Layout
+    ================================================================ */
+
+:root {
+    /* Colors */
+    --bg-primary: #0f0f1a;
+    --bg-secondary: #161625;
+    --bg-tertiary: #1c1c30;
+    --bg-elevated: #22223a;
+    --bg-hover: #2a2a48;
+    --bg-active: #333358;
+
+    --text-primary: #e8e8f0;
+    --text-secondary: #9999b3;
+    --text-muted: #666680;
+
+    --accent: #5b8def;
+    --accent-hover: #7aa5ff;
+    --accent-glow: rgba(91, 141, 239, 0.15);
+
+    --danger: #ef5b5b;
+    --danger-hover: #ff7a7a;
+
+    --success: #5bef8f;
+    --warning: #efc95b;
+
+    --border: rgba(255, 255, 255, 0.06);
+    --border-light: rgba(255, 255, 255, 0.1);
+
+    /* Sizing */
+    --toolbar-height: 48px;
+    --sidebar-width: 240px;
+    --status-height: 32px;
+    --radius: 6px;
+    --radius-sm: 4px;
+
+    /* Typography */
+    --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    font-family: var(--font);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    font-size: 13px;
+    -webkit-font-smoothing: antialiased;
+}
+
+#app {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ================================================================
+    Toolbar
+    ================================================================ */
+
+#toolbar {
+    height: var(--toolbar-height);
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    gap: 8px;
+    flex-shrink: 0;
+    z-index: 10;
+}
+
+.toolbar-left,
+.toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--accent);
+    padding: 0 8px;
+    letter-spacing: -0.3px;
+}
+
+.logo svg {
+    opacity: 0.9;
+}
+
+.toolbar-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--border-light);
+    margin: 0 6px;
+}
+
+.toolbar-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: var(--font);
+    font-size: 12.5px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.toolbar-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.toolbar-btn:active {
+    background: var(--bg-active);
+}
+
+.toolbar-btn.active {
+    background: var(--accent-glow);
+    color: var(--accent);
+}
+
+.toolbar-btn--danger:hover {
+    color: var(--danger);
+}
+
+/* Dropdown */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    padding: 4px;
+    min-width: 160px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    z-index: 100;
+}
+
+.dropdown-menu.show {
+    display: block;
+    animation: fadeIn 0.15s ease;
+}
+
+.dropdown-menu button {
+    display: block;
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: var(--font);
+    font-size: 12.5px;
+    text-align: left;
+    transition: all 0.12s ease;
+}
+
+.dropdown-menu button:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+/* ================================================================
+    Main Content (Sidebar + Viewport)
+    ================================================================ */
+
+#main-content {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+/* ---- Sidebar ---- */
+
+#sidebar {
+    width: var(--sidebar-width);
+    background: var(--bg-secondary);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.sidebar-section {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+}
+
+.sidebar-title {
+    font-size: 10.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+}
+
+/* Model list */
+.model-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.model-list-empty {
+    color: var(--text-muted);
+    font-size: 12px;
+    font-style: italic;
+    padding: 8px 0;
+}
+
+.model-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    cursor: default;
+    transition: background 0.12s ease;
+}
+
+.model-item:hover {
+    background: var(--bg-hover);
+}
+
+.model-item svg {
+    color: var(--accent);
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+
+.model-name {
+    flex: 1;
+    font-size: 12px;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.model-remove {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    padding: 2px 4px;
+    border-radius: 3px;
+    opacity: 0;
+    transition: all 0.12s ease;
+}
+
+.model-item:hover .model-remove {
+    opacity: 1;
+}
+
+.model-remove:hover {
+    color: var(--danger);
+    background: rgba(239, 91, 91, 0.1);
+}
+
+/* Info panel */
+.info-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+}
+
+.info-row span:first-child {
+    color: var(--text-muted);
+}
+
+.info-row span:last-child {
+    color: var(--text-primary);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---- Viewport ---- */
+
+#viewport-container {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+#viewport {
+    width: 100%;
+    height: 100%;
+}
+
+#viewport canvas {
+    display: block;
+}
+
+/* Status bar */
+#status-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--status-height);
+    background: var(--bg-secondary);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    gap: 8px;
+    z-index: 5;
+}
+
+#status-text {
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Loading spinner */
+.loader {
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--border-light);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Drop overlay */
+#drop-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 15, 26, 0.85);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 20;
+}
+
+.drop-overlay-content {
+    text-align: center;
+    color: var(--accent);
+    padding: 40px;
+    border: 2px dashed var(--accent);
+    border-radius: 16px;
+    background: var(--accent-glow);
+}
+
+.drop-overlay-content p {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 12px;
+}
+
+.drop-overlay-content small {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* ================================================================
+    Animations
+    ================================================================ */
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ================================================================
+    Scrollbar
+    ================================================================ */
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-light);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* ================================================================
+    Phase 3: Transform Panel
+    ================================================================ */
+
+.transform-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.transform-modes {
+    display: flex;
+    gap: 4px;
+}
+
+.mode-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px 4px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+}
+
+.mode-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-secondary);
+    border-color: var(--text-muted);
+}
+
+.mode-btn.active {
+    background: var(--accent-glow);
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+.transform-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 10.5px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+.input-row {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.axis-label {
+    font-size: 10px;
+    font-weight: 700;
+    width: 14px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.axis-x {
+    color: #ef5b5b;
+}
+
+.axis-y {
+    color: #5bef8f;
+}
+
+.axis-z {
+    color: #5b8def;
+}
+
+.input-row input[type="number"] {
+    flex: 1;
+    min-width: 0;
+    padding: 4px 6px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: var(--font);
+    font-size: 11.5px;
+    font-variant-numeric: tabular-nums;
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.input-row input[type="number"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+/* Hide number input spinners */
+.input-row input[type="number"]::-webkit-inner-spin-button,
+.input-row input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.input-row input[type="number"] {
+    appearance: textfield;
+}
+
+.reset-btn {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: var(--font);
+    font-size: 11.5px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+}
+
+.reset-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--text-muted);
+}
+
+/* ================================================================
+    Phase 4: Create Primitives
+    ================================================================ */
+
+.primitive-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+}
+
+.prim-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 10px 4px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: var(--font);
+    font-size: 10.5px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.prim-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(91, 141, 239, 0.15);
+}
+
+.prim-btn:active {
+    transform: translateY(0);
+}
+
+.prim-btn svg {
+    opacity: 0.7;
+    transition: opacity 0.15s ease;
+}
+
+.prim-btn:hover svg {
+    opacity: 1;
+    color: var(--accent);
+}
+
+/* Primitive Parameters Panel */
+.prim-params {
+    margin-top: 10px;
+    padding: 10px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    animation: slideDown 0.2s ease;
+}
+
+.prim-params-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.prim-params-actions {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.prim-action-btn {
+    flex: 1;
+    padding: 6px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-family: var(--font);
+    font-size: 11px;
+    font-weight: 600;
+    transition: all 0.15s ease;
+}
+
+.prim-action-create {
+    background: rgba(91, 141, 239, 0.15);
+    color: var(--accent);
+    border-color: rgba(91, 141, 239, 0.3);
+}
+
+.prim-action-create:hover {
+    background: rgba(91, 141, 239, 0.25);
+    border-color: var(--accent);
+}
+
+.prim-action-cancel:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+/* ================================================================
+    Phase 4: Boolean Operations
+    ================================================================ */
+
+.op-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.boolean-ops {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.op-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: var(--font);
+    font-size: 11.5px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+    text-align: left;
+}
+
+.op-btn:not(:disabled):hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--text-muted);
+}
+
+.op-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.op-btn svg {
+    flex-shrink: 0;
+    opacity: 0.7;
+}
+
+.op-btn:not(:disabled):hover svg {
+    opacity: 1;
+}
+
+/* Boolean button color accents */
+.op-btn--union:not(:disabled):hover {
+    border-color: var(--success);
+    color: var(--success);
+}
+
+.op-btn--union:not(:disabled):hover svg {
+    color: var(--success);
+}
+
+.op-btn--diff:not(:disabled):hover {
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.op-btn--diff:not(:disabled):hover svg {
+    color: var(--danger);
+}
+
+.op-btn--inter:not(:disabled):hover {
+    border-color: var(--warning);
+    color: var(--warning);
+}
+
+.op-btn--inter:not(:disabled):hover svg {
+    color: var(--warning);
+}
+
+.op-btn--extrude:not(:disabled):hover {
+    border-color: #9b59b6;
+    color: #9b59b6;
+}
+
+.op-btn--revolve:not(:disabled):hover {
+    border-color: #e67e22;
+    color: #e67e22;
+}
+
+/* ================================================================
+    Phase 4: Extrude & Revolve
+    ================================================================ */
+
+.modify-ops {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.modify-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.op-params {
+    padding: 10px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius);
+    animation: slideDown 0.2s ease;
+}
+
+.op-params .input-group {
+    margin-bottom: 8px;
+}
+
+.full-input {
+    width: 100%;
+    padding: 5px 8px;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm);
+    color: var(--text-primary);
+    font-family: var(--font);
+    font-size: 11.5px;
+    font-variant-numeric: tabular-nums;
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.full-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+/* Hide number input spinners for full-input too */
+.full-input::-webkit-inner-spin-button,
+.full-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.full-input {
+    appearance: textfield;
+}
+
+/* ================================================================
+    Animations (additional)
+    ================================================================ */
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+        max-height: 0;
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        max-height: 500px;
+    }
+}

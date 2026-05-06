@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+PLAN.MD
+old_ts_arch
+public/opencascade.wasm.wasm

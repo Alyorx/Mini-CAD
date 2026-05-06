@@ -2,9 +2,14 @@ import { defineConfig } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 export default defineConfig({
+  server: {
+    port: 5173,
+    open: true,
+  },
+  // Handle .wasm files as assets
+  assetsInclude: ['**/*.wasm'],
   plugins: [
     nodePolyfills({
-      // Replaces Webpack's "fallback" / "node" object
       include: ['fs', 'os', 'path', 'stream', 'crypto', 'worker_threads', 'perf_hooks'],
       globals: {
         Buffer: true,
@@ -12,15 +17,26 @@ export default defineConfig({
         process: true,
       },
     }),
+    {
+      name: 'serve-public-index',
+      configureServer(server) {
+        server.middlewares.use((req, res, next) => {
+          if (req.url === '/' || req.url === '/index.html') {
+            req.url = '/public/index.html';
+          }
+          next();
+        });
+      }
+    }
   ],
   optimizeDeps: {
-    // Required to prevent Vite from trying to pre-bundle the large library incorrectly
+    // Prevent Vite from pre-bundling the large WASM library
     exclude: ['opencascade.js'],
   },
   build: {
-    target: 'esnext', // Ensures compatibility with WASM and modern JS
+    target: 'esnext',
   },
-  // Replaces the "test: /\.wasm$/" rule
-  // Vite handles .wasm as static assets automatically or via plugin
-  assetsInclude: ['**/*.wasm'], 
+  worker: {
+    format: 'es',
+  },
 });
